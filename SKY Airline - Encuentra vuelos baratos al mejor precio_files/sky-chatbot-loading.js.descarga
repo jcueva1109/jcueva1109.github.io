@@ -1,0 +1,95 @@
+
+
+/*
+ * Setting chatbot configuration
+ */
+async function setChatbotConfig() {
+  const spanishHomeMarkets = ['argentina', 'chile', 'peru', 'otros'];
+  const homeMarketByPath = await getHomeMarketCountry();
+  if (!spanishHomeMarkets.includes(homeMarketByPath)) return;
+  createScriptKeepcon(homeMarketByPath);
+}
+
+/*
+ * Getting the homeMarket by the pathname
+ */
+function getHomeMarketCountry() {
+  const times = 0;
+  return new Promise((resolve, reject) => {
+    const testInterval = setInterval(() => {
+      if (window.location.pathname.length > 1) {
+        clearInterval(testInterval);
+        const homeMarketByPathName = document.location.pathname.split('/')[1];
+        resolve(homeMarketByPathName);
+      } else {
+        if (times >= 30000) {
+          clearInterval(testInterval);
+          reject('Timeout 20000');
+        }
+      }
+    }, 1);
+  });
+}
+/*
+ * Creating the inbentaSDK script
+ */
+function createInbentaSDK() {
+  const title = document.getElementsByTagName('title')[0];
+  const scriptInbentaSDK = document.createElement('script');
+  scriptInbentaSDK.onload = function () {
+    setChatbotConfig();
+  };
+  scriptInbentaSDK.src = 'https://sdk.inbenta.io/chatbot/1.47.0/inbenta-chatbot-sdk.js';
+  scriptInbentaSDK.integrity =
+    'sha384-zLz7enaTcp2jRUfD4pVe/It9ouF4n6BvAGwdkSdWgY8Uj9u97lZ8aki+yQfJn6eg';
+  scriptInbentaSDK.crossOrigin = 'crossorigin';
+  scriptInbentaSDK.setAttribute('defer', '');
+  title.insertAdjacentElement('beforebegin', scriptInbentaSDK);
+}
+/*
+ * Creating the script of the chatbot configuration depending of country
+ */
+function createScript(homeMarketName) {
+  const inbentaSKD = document.querySelector('script[src$="inbenta-chatbot-sdk.js"]');
+  const script = document.createElement('script');
+
+  if (homeMarketName === 'peru') {
+    // FIXME: TEMPORAL DISABLING OF CHATBOT FOR PERU
+    script.src = '/legacy/inbenta/peru/js/chatbot_config_es.js';
+  } else if (['chile', 'argentina', 'otros'].includes(homeMarketName)) {
+    script.src = '/legacy/inbenta/chile/js/chatbot_config_es.js';
+  }
+
+  script.setAttribute('defer', '');
+  // This function it's needed by the keepcon integration
+  script.onload = window.kc_hide_call_to_action;
+  inbentaSKD.insertAdjacentElement('afterend', script);
+}
+
+/*
+ * Creating the script of the keepcon configuration depending of country
+ */
+function createScriptKeepcon(homeMarketName) {
+  const inbentaSKD = document.querySelector('script[src$="inbenta-chatbot-sdk.js"]');
+  const script = document.createElement('script');
+  let hash = '';
+
+  if (homeMarketName === 'chile') {
+    hash = 'e051f1e38f1ea3473f52c953e3032f13';
+  } else if (homeMarketName === 'peru') {
+    hash = 'f02ccfeba881944854a382ba8f80a7cc';
+  } else if (homeMarketName === 'argentina') {
+    hash = 'ae1d2b5b7a5128290646cb93c49f9851';
+  } else if (homeMarketName === 'otros') {
+    hash = '03073e9417574507cd77f047b22c0969';
+  }
+
+  script.src = `https://webchat-sky.keepcon.com/chat/SKY_Webchat_${hash}/plugin.js`;
+  script.setAttribute('defer', '');
+  script.onload = () => createScript(homeMarketName);
+  inbentaSKD.insertAdjacentElement('afterend', script);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  createInbentaSDK();
+});

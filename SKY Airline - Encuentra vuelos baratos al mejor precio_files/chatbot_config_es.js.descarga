@@ -1,0 +1,520 @@
+/* eslint-disable */
+
+// creating actual time
+const currentTime = new Date().toLocaleString("es-CL", { timeZone: "America/Santiago" });
+const currentMoment = moment(currentTime, "DD-MM-YYYY HH:mm:ss").format("HH:mm");
+document.cookie = 'SameSite=none; Secure';
+
+const chatEscalationQuestionMessage = {
+  message: '¿Quieres iniciar un chat con un agente?',
+  translate: false,
+  id: 'keepconChatEscalation',
+  options: [
+    { label: 'Sí', value: 'yes' },
+    { label: 'No', value: 'no' }
+  ]
+}
+
+// creating a rating counter
+// for bad content ratings escalation
+var badRatingCounter = 0;
+
+// variable to control escalation state
+var escalating = false;
+
+// variable to hold the user's escalation data
+var escalationData = {
+  email: null,
+  full_name: null,
+  identity_document: null,
+  reservation_code: null,
+}
+
+var noResultsCounter = 0;
+var attemptsBeforeContact = 2;
+
+// Chatbot configuration
+const chatbot_config = {
+  "chatbotId": "sky_chatbot_es_chile",
+  "environment": "production", // Environments => "development" / "preproduction" / "production"
+  "userType": 2,
+  "lang": "es",
+  "answers": {
+    maxRelatedContents: 5,
+    maxOptions: 5,
+  },
+  "labels": {
+    "es": {
+      "interface-title": "SKY - Chile",
+      'close-chat': '¿Desea cerrar el chat? <p>Se perderá el histórico de la conversación</p>',
+    }
+  },
+  "ratingPosition": "conversationWindow",
+  "ratingOptions": [
+    {
+      "id": 1,
+      "label": "Sí",
+      "comment": false,
+      "response": "¡Gracias!"
+    },
+    {
+      "id": 2,
+      "label": "No",
+      "comment": true
+    }
+  ],
+  "closeButton": {
+    "visible": true
+  },
+  "inputCharacterCounter": true,
+  "inputCharacterCounterMax": 100,
+  "adapters": [
+    // custom adapters for Keepcon Live Chat Escalation
+    function (chatbot) {
+      chatbot.subscriptions.onStartConversation(function () {
+        // associate this instance with the Chile Help Center profile
+        chatbot.api.addVariable('federatedBotProfile', 2);
+
+        getConfig(chatbot, function (config) {
+          attemptsBeforeContact = +config.config.attemptsBeforeContact || attemptsBeforeContact
+          localStorage.setItem('working_hours_start', config.horarioChile.inicio);
+          localStorage.setItem('working_hours_end', config.horarioChile.fin);
+        })
+      });
+
+      chatbot.subscriptions.onReady(function (next) {
+        // variable to store locally in the browser when the agent scale is true or false
+        const flag_escalate = JSON.parse(window.localStorage.getItem('flag_escalate'));
+
+        //if agent scale is true
+        if (flag_escalate == 1) {
+
+          // getting the launcher
+          setTimeout(function () {
+
+            // getting the launcher
+            var inbenta_bot_launcher = document.querySelector('.inbenta-bot__launcher');
+
+            // setting its visibility to hidden
+            inbenta_bot_launcher.style.visibility = 'hidden';
+            document.querySelector("#kc-chat-container").style.visibility = 'visible';
+            document.querySelector("#kc-chat-container").style.overflow = 'visible';
+            document.querySelector("#kc-chat-iframe").style.transform = 'translate(0px, 0%)';
+
+          }, 550);
+        }
+
+        // showing the inbenta chatbot conversation window when user closes keepcon widget
+        window.kc_on_close(
+          function () {
+            document.querySelector("#kc-chat-container").style.visibility = 'hidden';
+            document.querySelector("#kc-chat-container").style.overflow = 'hidden';
+            // do not show the keepcon widget button
+            // so user doesn't start the chat
+            // conversation on it's own
+            window.kc_hide_call_to_action();
+
+            //agent scale is false
+            window.localStorage.setItem('flag_escalate', JSON.stringify(0));
+            // making the inbenta chatbot
+            // conversation window visible again
+            chatbot.actions.showConversationWindow();
+          }
+        )
+
+      });
+
+      // Minimize the chatbot window on mobile if it
+      // Opens as soon as the chatbot finishes loading
+      chatbot.subscriptions.onDomReady(function (next) {
+        if (window.innerWidth <= 768) {
+          chatbot.actions.hideConversationWindow();
+        }
+        next();
+      })
+
+      chatbot.subscriptions.onResetSession(function (next) {
+        //agent scale is false
+        window.localStorage.setItem('flag_escalate', JSON.stringify(0));
+        //escalating false
+        escalating = false;
+        noResultsCounter = 0;
+        return next();
+      });
+
+      // this evaluates every time the chatbot displays a normal message
+      chatbot.subscriptions.onDisplayChatbotMessage(function (messageData, next) {
+        if (isWelcomeMessage(messageData))
+          chatbot.actions.disableInput();
+
+        if (isNoResultsMessage(messageData)) {
+          noResultsCounter++;
+          if (noResultsCounter >= attemptsBeforeContact)
+            escalating = false
+        } else {
+          noResultsCounter = 0;
+        }
+
+        // check if escalation process is inactive
+        if (!escalating) {
+          // only if escalation is not happening, messages are evaluated
+          // to offer escalation when user asks for it
+          message = evaluateMessageForEscalation(messageData, chatbot);
+
+          // messages that has direct call are used
+          // to trigger a message without natural language matching
+          if (message.hasOwnProperty('directCall')) {
+            chatbot.actions.sendMessage(message);
+          }
+          // when keepconChatEscalation message triggers
+          // we evaluate the id of the message. Not the direct call
+          // because this message doesn't use direct call
+          else if (message.id === 'keepconChatEscalation') {
+            // escalation was set to true in this step
+            // so this happens once
+
+            //set opcion_keep to indicate keepconChatEscalation system message was triggered
+            window.localStorage.setItem('opcion_keep', JSON.stringify(1));
+
+            // display the escalation offer message
+            chatbot.actions.displaySystemMessage(message);
+          } else {
+            // advance to next step
+            return next(message)
+          }
+        } else {
+          // evaluate the completion of the form
+          // to get the variable values and send them to keepcon
+          if (messageData.message === 'Tu consulta se ha enviado') {
+            // escalation variables are ready to be sent
+            // to keepcon widget
+
+            // getting chat history
+            // with all messages
+            chatHistory = chatbot.actions.getConversationTranscript();
+
+            // creating a variable configuration for getting the variables
+            var variableConfiguration = {
+              revealValues: true
+            }
+            // getting user data set in variables
+            chatbot.api.getVariables(variableConfiguration).then(function (variables) {
+
+              escalationData.email = variables.data.keepcon_email.value
+              escalationData.full_name = variables.data.keepcon_full_name.value
+              escalationData.identity_document = variables.data.keepcon_identity_document.value
+              escalationData.reservation_code = variables.data.keepcon_reservation_code.value
+
+              // implement value parsing based on regex matching
+
+              // Ready to escalate to keepcon widget
+              // and resetting the escalation cycle
+              escalating = false;
+
+              //agent scale is true
+              window.localStorage.setItem('flag_escalate', JSON.stringify(1));
+
+              // start Keepcon escalation process
+              keepconAgentEscalation(chatbot, chatHistory, escalationData)
+            });
+          }
+          return next(messageData)
+        }
+      });
+
+      // evaluates when system messages are triggered
+      chatbot.subscriptions.onSelectSystemMessageOption(function (optionData, next) {
+
+        // variable to store locally in the browser when system message is triggered
+        opcion_keep = JSON.parse(window.localStorage.getItem('opcion_keep'));
+
+        // this acts when keepconChatEscalation system message is triggered
+        if (opcion_keep == 1) {
+          noResultsCounter = 0;
+
+          //set opcion_keep
+          window.localStorage.setItem('opcion_keep', JSON.stringify(0));
+          // user has select yes option
+          // so he or she wants to talk with a human
+          if (optionData.option.value == 'yes') {
+            // escalate to agent process started
+            chatbot.actions.escalateToAgent();
+            // user doesn't want to escalate
+          } else if (optionData.option.value == 'no') {
+            // log tracking escalation rejected
+            chatbot.api.track('CONTACT_REJECTED', { value: "TRUE" });
+
+            // resetting the escalation cycle
+            escalating = false;
+
+            // prepare the rejected escalation
+            // message to trigger it
+            var directMessageData = {
+              message: "",
+              directCall: "keepcon_chat_rejected_escalation"
+            }
+
+            // display the message
+            chatbot.actions.sendMessage(directMessageData);
+          }
+        }
+        // return to default behavior
+        return next(optionData);
+      });
+
+      // evaluates when escalation has started
+      chatbot.subscriptions.onEscalateToAgent(function (next) {
+
+        var directMessageData = {
+          message: "",
+          directCall: "keepcon_chat_escalation"
+        }
+
+        chatbot.actions.sendMessage(directMessageData);
+      });
+
+      // Escalate on successive (3) bad content ratings
+      // definig custom behaviour for onRateContent subscription
+      // this happens only within the working hours
+
+      var badRatingCounter = 0;
+
+      chatbot.subscriptions.onRateContent(function (rateData, next) {
+
+        // escalation won't happen if out of working hours
+        const isWorkingTime = checkIsWorkingTime();
+
+        if (isWorkingTime) {
+
+          // check if rating selected by the user is 'no' (bad rating)
+          // and it has a comment on it
+          if (rateData.value == chatbot_config.ratingOptions[1].id && rateData.hasOwnProperty('comment')) {
+            // user has rated badly a content
+            // summing 1 to the counter
+            badRatingCounter++;
+          }
+
+          // check if user has rated content bad 2 times
+          if (badRatingCounter == 1) {
+            // user has rated badly any content twice
+            // escalate to an agent
+
+            // tracking the contact offered event
+            chatbot.api.track('CONTACT', { value: "TRUE" });
+            // setting the escalation process for evaluation
+            escalating = true;
+            // resetting the counter
+            badRatingCounter = 0;
+            // displaying the message as a system message for offer escalation
+
+            //set opcion_keep to indicate keepconChatEscalation system message was triggered
+            window.localStorage.setItem('opcion_keep', JSON.stringify(1));
+
+            // when user has rated bad two contents in a row
+            chatbot.actions.disableInput();
+            chatbot.actions.displaySystemMessage(chatEscalationQuestionMessage);
+          }
+        }
+
+        return next(rateData);
+      });
+    }
+  ]
+};
+
+function getConfig(chatbot, cb) {
+  var config = {}
+  chatbot.api.getAppData({
+    dataID: 'config',
+    name: '',
+  }).then(response => {
+    response.data.results.forEach(function (configItem) {
+      config[configItem.name] = configItem.value
+    });
+    cb(config);
+  })
+}
+
+// chatbot credentials
+const chatbot_authorization = {
+
+  domainKey: "eyJ0eXBlIjoiSldUIiwiYWxnIjoiUlMyNTYifQ.eyJwcm9qZWN0Ijoic2t5X2NoYXRib3RfZXMiLCJkb21haW5fa2V5X2lkIjoiQld1ZUxZQjZIRUo5R29MRXBpQXZ6Zzo6In0.ivZKi6kN8z7aV8O9wa2dWSIPuNWW3nSbx6h1xZHSRE7ZiF22I2U0tTTiVX2ksmVm4xupvClhNtAx7YX7mlgKiA",
+  inbentaKey: "ShRPgKwR79GY+6G8IgDmn0CNovgAlweyOL6P4K8NF3E="
+}
+
+
+InbentaChatbotSDK.buildWithDomainCredentials(chatbot_authorization, chatbot_config);
+
+function evaluateMessageForEscalation(messageData, chatbot) {
+  var hasEscalateFlag = messageData.attributes != null
+    && messageData.attributes.hasOwnProperty('ESCALATE')
+    && messageData.attributes['ESCALATE'] === 'TRUE';
+
+  if (hasEscalateFlag || noResultsCounter >= attemptsBeforeContact) {
+    noResultsCounter = 0;
+    // evaluate if out of working hours
+    // chat won't try to escalate if the
+    // contact center isn't active at this time
+    const isWorkingTime = checkIsWorkingTime();
+
+    if (!isWorkingTime) {
+      // return message data indicating that
+      // the contact center isn't active at this time
+      var directMessageData = {
+        message: "",
+        directCall: "out_of_working_hours"
+      }
+
+      // track out of working hours
+      chatbot.api.track('CONTACT_OUT_OF_WORKING_HOURS', { value: "TRUE" });
+
+      escalating = false;
+      return directMessageData;
+
+    } else {
+      // the contact center is active
+      // therefore we check if there
+      // are available agents in keepcon
+      if (window.kc_has_available_agents() == false) {
+        var directMessageData = {
+          message: "",
+          directCall: "no_agents_available"
+        }
+
+        // track no agents
+        chatbot.api.track('CONTACT_UNATTENDED', { value: "TRUE" });
+
+        escalating = false;
+        return directMessageData;
+
+      } else {
+
+        // inside of working hours
+        // and agents available
+        // starting to store data for escalation
+
+        const chatBotmessageData = {
+          type: 'answer',
+          message: messageData.message,
+        }
+        chatbot.actions.displayChatbotMessage(chatBotmessageData);
+
+        chatbot.api.track('CONTACT', { value: "TRUE" });
+
+        escalating = true;
+        chatbot.actions.disableInput();
+        return chatEscalationQuestionMessage;
+      }
+    }
+  }
+
+  // if all else failed return original message
+  escalating = false;
+  return messageData;
+}
+
+function keepconAgentEscalation(chatbot, chatHistory, escalationData) {
+  let kcStateKey = Object.keys(localStorage).find(key => key.endsWith('kc-state'));
+  if (localStorage.getItem(kcStateKey) === 'Conversation') return;
+
+  chatbot.api.track('CONTACT_ATTENDED', { value: "TRUE" });
+
+  // initializing object to store chat history
+  // and passing it to keepcon chat widget
+
+  var keepconChatHistory = {
+    user: {
+      name: escalationData.full_name
+    },
+    messages: []
+  }
+  var keepconChatFields = {
+    email: escalationData.email,
+    nombre: escalationData.full_name,
+    documento_identidad: escalationData.identity_document,
+    codigo_reserva: escalationData.reservation_code
+  }
+
+  // building keepcon chat history messages
+  // with data from chat history
+  chatHistory.forEach(function (messageData) {
+
+    // composing date and time string from
+    // chatbot datetime
+    var date = new Date(messageData.datetime * 1000);
+
+    var dateString =
+      date.getUTCFullYear() + "-" +
+      ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" +
+      ("0" + date.getUTCDate()).slice(-2) +
+      "T" +
+      ("0" + date.getUTCHours()).slice(-2) + ":" +
+      ("0" + date.getUTCMinutes()).slice(-2) + ":" +
+      ("0" + date.getUTCSeconds()).slice(-2) +
+      "Z";
+
+    // checking if message comes from chatbot
+    // or from human
+    var isBrand = true;
+
+    switch (messageData.user) {
+      case 'assistant':
+        isBrand = true;
+        break;
+      case 'guest':
+        isBrand = false;
+        break
+    }
+
+    // pushing the composed data into
+    // keepcon chat history object
+    keepconChatHistory.messages.push({
+      key: messageData.id,
+      text: messageData.message,
+      timestamp: dateString,
+      isBrand: isBrand,
+      status: "SENT"
+    })
+  })
+
+  // reset the chatbot session
+  // this hides the chatbot window
+  // and leaves only the launcher
+  chatbot.actions.resetSession(
+    (function () {
+      // hide the launcher after 2 seconds of session reset
+      setTimeout(function () {
+        // getting the launcher
+        var inbenta_bot_launcher = document.querySelector('.inbenta-bot__launcher');
+        // setting its visibility to hidden
+        inbenta_bot_launcher.style.visibility = 'hidden';
+        document.querySelector("#kc-chat-container").style.visibility = 'visible';
+        document.querySelector("#kc-chat-container").style.overflow = 'visible';
+        document.querySelector("#kc-chat-iframe").style.transform = 'translate(0px, 0%)';
+      }, 550);
+    })()
+  );
+
+  // start keepcon chat with escalation data
+
+  window.kc_start_chat(keepconChatFields, keepconChatHistory);
+}
+function checkIsWorkingTime() {
+  // creating start office time
+  const startTime = moment(`${localStorage.getItem('working_hours_start')}`, "hmm").format("HH:mm");;
+  // creating end office time
+  const endTime = moment(`${localStorage.getItem('working_hours_end')}`, "hmm").format("HH:mm");
+
+  if (currentMoment < startTime || currentMoment > endTime) {
+    return false  // "outOfWorkingHours";
+  } else {
+    return true //"ChatWithLiveAgentContactForm";
+  }
+}
+function isNoResultsMessage(messageData) {
+  return messageData.attributes && messageData.attributes.DIRECT_CALL === 'sys-no-results'
+}
+
+function isWelcomeMessage(messageData) {
+  return messageData.attributes && messageData.attributes.DIRECT_CALL === 'sys-welcome'
+}

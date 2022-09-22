@@ -1,0 +1,437 @@
+@font-face {
+    font-family: 'Hint';
+    src: url(/legacy/inbenta/fonts/skyairlinesfontregular.05e9ad87.eot);
+    src: url(/legacy/inbenta/fonts/skyairlinesfontregular.05e9ad87.eot?#iefix) format("embedded-opentype"), url(/legacy/inbenta/fonts/skyairlinesfontregular.299bc4df.woff) format("woff"), url(/legacy/inbenta/fonts/skyairlinesfontregular.1e1e9d9b.ttf) format("truetype"), url(/legacy/inbenta/images/skyairlinesfontregular.7385e10e.svg#skyairlinesfontregular) format("svg");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hint';
+    src: url(/legacy/inbenta/fonts/skyairlinesfontmedium.9bc88b83.eot);
+    src: url(/legacy/inbenta/fonts/skyairlinesfontmedium.9bc88b83.eot?#iefix) format("embedded-opentype"), url(/legacy/inbenta/fonts/skyairlinesfontmedium.a886125c.woff) format("woff"), url(/legacy/inbenta/fonts/skyairlinesfontmedium.bbb1db0d.ttf) format("truetype"), url(/legacy/inbenta/images/skyairlinesfontmedium.073b0b6c.svg#skyairlinesfontmedium) format("svg");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Hint';
+    src: url(/legacy/inbenta/fonts/skyairlinesfontsemibold.23db22c3.eot);
+    src: url(/legacy/inbenta/fonts/skyairlinesfontsemibold.23db22c3.eot?#iefix) format("embedded-opentype"), url(/legacy/inbenta/fonts/skyairlinesfontsemibold.64e8a90e.woff) format("woff"), url(/legacy/inbenta/fonts/skyairlinesfontsemibold.b2b343ed.ttf) format("truetype"), url(/legacy/inbenta/images/skyairlinesfontsemibold.ada8a5f2.svg#skyairlinesfontsemibold) format("svg");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'skyairlinesfont';
+    src: url(/legacy/inbenta/fonts/skyairlinesfontbold.211cc218.eot);
+    src: url(/legacy/inbenta/fonts/skyairlinesfontbold.211cc218.eot?#iefix) format("embedded-opentype"), url(/legacy/inbenta/fonts/skyairlinesfontbold.ac2aa1f1.woff) format("woff"), url(/legacy/inbenta/fonts/skyairlinesfontbold.1a6f1114.ttf) format("truetype"), url(/legacy/inbenta/images/skyairlinesfontbold.9dbd22fd.svg#skyairlinesfontbold) format("svg");
+    font-weight: 700;
+    font-style: normal;
+}
+
+body .inbenta-bot {
+  font-family: "Hint", Helvetica, sans-serif;
+  font-size: 14px;
+  color: #333;
+  line-height: 20px;
+  z-index: 99999; }
+  body .inbenta-bot a {
+    color: #fe0196; }
+    body .inbenta-bot a:active, body .inbenta-bot a:focus {
+      color: #fe0196; }
+    body .inbenta-bot a:hover {
+      color: #fe0196;
+      text-decoration: underline; }
+  body .inbenta-bot-button {
+    background-color: #fe0196;
+    color: white;
+    border-radius: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    border: none;
+    text-transform: none;
+    font-weight: 400;
+    padding: 8px 16px; }
+    body .inbenta-bot-button span {
+      width: 100%; }
+    body .inbenta-bot-button:hover:not([disabled]), body .inbenta-bot-button.clicked {
+      background-color: #fe0196;
+      -webkit-box-shadow: none;
+              box-shadow: none; }
+    body .inbenta-bot-button[disabled] {
+      background-color: #fe0196;
+      color: white; }
+      body .inbenta-bot-button[disabled].clicked {
+        background-color: #fe0196;
+        color: white;
+        opacity: .7; }
+  body .inbenta-bot-input {
+    font-family: "Hint", Helvetica, sans-serif;
+    font-size: 14px;
+    color: #333; }
+
+
+.inbenta-bot__launcher {
+  padding: 0 !important;
+  background-color: transparent !important;
+  z-index: 998 !important;
+}
+
+body .inbenta-bot__launcher {
+  right: 15px !important;
+  bottom: 15px !important;
+}
+
+.inbenta-bot__launcher.middle {
+  bottom: 46vh !important;
+}
+
+body .inbenta-bot__launcher__image {
+    background-image: url(/img/icons/logo-chat.svg);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 126px;
+    width: 117px;
+    margin: 0px -2rem;
+}
+
+.newsletter-margin {
+  margin-bottom: 6.8rem !important;
+}
+
+@media (max-width: 425px) {
+  body .inbenta-bot__launcher__image {
+    background-image: url(/img/icons/logo-chat-mobile.svg);
+    height: 77px;
+    width: 80px;
+  }
+
+  body .inbenta-bot__launcher {
+    right: 0 !important;
+    bottom: 0 !important;
+    box-shadow: unset;
+    height: 77px;
+    width: 80px;
+  }
+  
+  .newsletter-margin {
+    margin-bottom: 11.6rem !important;
+  }
+}
+
+body .inbenta-bot__launcher__text {
+    font-family: "Hint", Helvetica, sans-serif;
+    font-size: 16px;
+}
+
+@media (max-width: 767px) {
+    body .inbenta-bot__launcher__text {
+        display: none;
+    }
+}
+
+  body .inbenta-bot__chat, body .inbenta-bot__bubble {
+    border-radius: 0; }
+    body .inbenta-bot__chat__header, body .inbenta-bot__bubble__header {
+      background-color: #f4f4f4;
+      -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15), 0 3px 10px 0 rgba(0, 0, 0, 0.05);
+              box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15), 0 3px 10px 0 rgba(0, 0, 0, 0.05); }
+    body .inbenta-bot__chat .header__title, body .inbenta-bot__bubble .header__title {
+      display: -ms-flexbox;
+      display: -webkit-box;
+      display: flex;
+      -ms-align-items: center;
+      -webkit-box-align: center;
+          -ms-flex-align: center;
+              align-items: center;
+      font-size: 16px;
+      color: #701c74;
+      font-family: "Hint", Helvetica, sans-serif;
+      font-weight: 600; }
+    body .inbenta-bot__chat .header__actions__icon + .header__actions__icon, body .inbenta-bot__bubble .header__actions__icon + .header__actions__icon {
+      padding-left: 15px; }
+    body .inbenta-bot__chat .header__actions__icon:before, body .inbenta-bot__bubble .header__actions__icon:before {
+      color: #701c74;
+      font-size: 19px; }
+    body .inbenta-bot__chat .header__actions__icon:hover, body .inbenta-bot__bubble .header__actions__icon:hover {
+      opacity: 1; }
+      body .inbenta-bot__chat .header__actions__icon:hover:before, body .inbenta-bot__bubble .header__actions__icon:hover:before {
+        color: #701c74; }
+    body .inbenta-bot__chat .body__wrapper, body .inbenta-bot__bubble .body__wrapper {
+      background-color: white; }
+    body .inbenta-bot__chat .messages__message__content, body .inbenta-bot__bubble .messages__message__content {
+      -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+              box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      font-size: 14px;
+      color: #333;
+      padding: 10px; }
+    body .inbenta-bot__chat .messages__message .extended_message_container, body .inbenta-bot__bubble .messages__message .extended_message_container {
+      -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+              box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05); }
+    body .inbenta-bot__chat .messages__message--sent .messages__message__content, body .inbenta-bot__bubble .messages__message--sent .messages__message__content {
+      border-radius: 0;
+      background-color: rgba(38, 222, 0, 0.08);
+      color: #333; }
+    body .inbenta-bot__chat .messages__message--sent .content__label, body .inbenta-bot__bubble .messages__message--sent .content__label {
+      display: none; }
+    body .inbenta-bot__chat .messages__message--received .messages__message__avatar, body .inbenta-bot__bubble .messages__message--received .messages__message__avatar {
+      display: none; }
+    body .inbenta-bot__chat .messages__message--received .messages__message__content, body .inbenta-bot__bubble .messages__message--received .messages__message__content {
+      background-color: #f6f6f6;
+      border-radius: 0 5px 5px 5px;
+      color: #333; }
+    body .inbenta-bot__chat .messages__message--received .content__label, body .inbenta-bot__bubble .messages__message--received .content__label {
+      display: none; }
+    body .inbenta-bot__chat .messages__message--system .messages__message__content, body .inbenta-bot__bubble .messages__message--system .messages__message__content {
+      background-color: #fbfbfb; }
+    body .inbenta-bot__chat .content__open-sidebubble__phrase, body .inbenta-bot__bubble .content__open-sidebubble__phrase {
+      color: #701c74;
+      font-family: "Hint", Helvetica, sans-serif;
+      font-weight: 600; }
+    body .inbenta-bot__chat .content__open-sidebubble__icon, body .inbenta-bot__bubble .content__open-sidebubble__icon {
+      opacity: 1; }
+      body .inbenta-bot__chat .content__open-sidebubble__icon:before, body .inbenta-bot__bubble .content__open-sidebubble__icon:before {
+        color: #fe0196; }
+    body .inbenta-bot__chat .content__open-sidebubble:hover, body .inbenta-bot__bubble .content__open-sidebubble:hover {
+      background-color: transparent;
+      -webkit-box-shadow: none;
+              box-shadow: none; }
+      body .inbenta-bot__chat .content__open-sidebubble:hover .content__open-sidebubble__phrase, body .inbenta-bot__bubble .content__open-sidebubble:hover .content__open-sidebubble__phrase {
+        color: #701c74; }
+    body .inbenta-bot__chat .content__buttons .inbenta-bot-button, body .inbenta-bot__bubble .content__buttons .inbenta-bot-button {
+      min-height: auto; }
+      body .inbenta-bot__chat .content__buttons .inbenta-bot-button + .inbenta-bot-button, body .inbenta-bot__bubble .content__buttons .inbenta-bot-button + .inbenta-bot-button {
+        margin-left: 10px; }
+    body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button, body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button {
+      color: #fe0196;
+      font-weight: normal;
+      font-size: 14px; }
+      body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button:hover:not([disabled]), body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button.clicked, body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button:hover:not([disabled]), body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button.clicked {
+        color: #fe0196;
+        background-color: transparent;
+        text-decoration: underline; }
+      body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button.clicked, body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button.clicked {
+        color: #701c74;
+        font-weight: normal; }
+      body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button span, body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button span {
+        width: auto; }
+    body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-icon--faq-icon, body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-icon--faq-icon {
+      display: none; }
+    body .inbenta-bot__chat .content__buttons--multiple-choise[disabled], body .inbenta-bot__bubble .content__buttons--multiple-choise[disabled] {
+      opacity: .8; }
+    body .inbenta-bot__chat .content__buttons--download .inbenta-bot-button, body .inbenta-bot__bubble .content__buttons--download .inbenta-bot-button {
+      color: #fe0196; }
+      body .inbenta-bot__chat .content__buttons--download .inbenta-bot-button:hover:not([disabled]), body .inbenta-bot__chat .content__buttons--download .inbenta-bot-button.clicked, body .inbenta-bot__bubble .content__buttons--download .inbenta-bot-button:hover:not([disabled]), body .inbenta-bot__bubble .content__buttons--download .inbenta-bot-button.clicked {
+        background-color: transparent;
+        color: #fe0196; }
+      body .inbenta-bot__chat .content__buttons--download .inbenta-bot-button span, body .inbenta-bot__bubble .content__buttons--download .inbenta-bot-button span {
+        width: auto; }
+    body .inbenta-bot__chat .content__related-contents, body .inbenta-bot__bubble .content__related-contents {
+      background-color: #FEFEFE; }
+      body .inbenta-bot__chat .content__related-contents .content__related__show, body .inbenta-bot__bubble .content__related-contents .content__related__show {
+        padding: 8px; }
+      body .inbenta-bot__chat .content__related-contents--active .content__related__show, body .inbenta-bot__bubble .content__related-contents--active .content__related__show {
+        background-color: #FEFEFE;
+        color: #701c74; }
+    body .inbenta-bot__chat .content__related__show, body .inbenta-bot__bubble .content__related__show {
+      border-top: 1px solid #D9D9D9;
+      border-radius: 0;
+      color: #701c74;
+      font-family: "Hint", Helvetica, sans-serif;
+      font-weight: 600;
+      font-size: 14px; }
+      body .inbenta-bot__chat .content__related__show:hover, body .inbenta-bot__bubble .content__related__show:hover {
+        color: #fe0196;
+        background-color: #FBFBFB; }
+    body .inbenta-bot__chat .content__related__icon--closed:before, body .inbenta-bot__bubble .content__related__icon--closed:before {
+      color: #fe0196;
+      margin-bottom: 7px;
+      display: inline-block;
+      font-size: 14px; }
+    body .inbenta-bot__chat .content__related__icon--opened:before, body .inbenta-bot__bubble .content__related__icon--opened:before {
+      color: #fe0196;
+      margin-bottom: 7px;
+      display: inline-block;
+      font-size: 14px; }
+    body .inbenta-bot__chat .content__related__button, body .inbenta-bot__bubble .content__related__button {
+      color: #fe0196;
+      font-weight: normal;
+      padding: 5px;
+      padding-top: 0;
+      background-color: transparent;
+      font-family: "Hint", Helvetica, sans-serif;
+      font-size: 14px; }
+      body .inbenta-bot__chat .content__related__button--active, body .inbenta-bot__chat .content__related__button:hover:not([disabled]), body .inbenta-bot__chat .content__related__button:focus, body .inbenta-bot__bubble .content__related__button--active, body .inbenta-bot__bubble .content__related__button:hover:not([disabled]), body .inbenta-bot__bubble .content__related__button:focus {
+        color: #fe0196;
+        background-color: transparent;
+        text-decoration: underline; }
+    body .inbenta-bot__chat .footer__chat-activity .activity__content, body .inbenta-bot__bubble .footer__chat-activity .activity__content {
+      -webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+              box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+      background-color: #f6f6f6;
+      border-radius: 0 5px 5px 5px; }
+    body .inbenta-bot__chat .footer__chat-activity .activity__avatar, body .inbenta-bot__bubble .footer__chat-activity .activity__avatar {
+      display: none; }
+    body .inbenta-bot__chat .footer__chat-activity .activity__dot, body .inbenta-bot__bubble .footer__chat-activity .activity__dot {
+      background-color: #fe0196; }
+    body .inbenta-bot__chat .footer__chat-activity .activity__text, body .inbenta-bot__bubble .footer__chat-activity .activity__text {
+      color: #333; }
+    body .inbenta-bot__chat .footer__form, body .inbenta-bot__bubble .footer__form {
+      -webkit-box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.09);
+              box-shadow: 0 -2px 2px 0 rgba(0, 0, 0, 0.09);
+      position: relative; }
+      body .inbenta-bot__chat .footer__form__input, body .inbenta-bot__bubble .footer__form__input {
+        color: #701c74;
+        font-size: 14px;
+        padding-right: 25px; }
+        body .inbenta-bot__chat .footer__form__input[disabled], body .inbenta-bot__chat .footer__form__input:hover[disabled], body .inbenta-bot__bubble .footer__form__input[disabled], body .inbenta-bot__bubble .footer__form__input:hover[disabled] {
+          border: none; }
+      body .inbenta-bot__chat .footer__form__counter, body .inbenta-bot__bubble .footer__form__counter {
+        display: -ms-flexbox;
+        display: -webkit-box;
+        display: flex;
+        -ms-justify-content: center;
+        -webkit-box-pack: center;
+            -ms-flex-pack: center;
+                justify-content: center;
+        -ms-align-items: center;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+        height: 46px;
+        position: absolute;
+        right: 46px;
+        top: 0;
+        color: #ccc;
+        opacity: 0;
+        -webkit-transition-duration: .3s;
+                transition-duration: .3s;
+        -webkit-transition-property: opacity;
+        transition-property: opacity; }
+      body .inbenta-bot__chat .footer__form__button .inbenta-bot-icon--wait:before, body .inbenta-bot__bubble .footer__form__button .inbenta-bot-icon--wait:before {
+        color: #26DE00; }
+      body .inbenta-bot__chat .footer__form__button .inbenta-bot-icon--send:before, body .inbenta-bot__bubble .footer__form__button .inbenta-bot-icon--send:before {
+        color: #26DE00; }
+      body .inbenta-bot__chat .footer__form__button.footer__form__button--attach:hover:not([disabled]), body .inbenta-bot__bubble .footer__form__button.footer__form__button--attach:hover:not([disabled]) {
+        color: #701c74; }
+      body .inbenta-bot__chat .footer__form__button.footer__form__button--attach .inbenta-bot-icon:before, body .inbenta-bot__bubble .footer__form__button.footer__form__button--attach .inbenta-bot-icon:before {
+        color: #701c74; }
+      body .inbenta-bot__chat .footer__form--focus .footer__form__counter, body .inbenta-bot__bubble .footer__form--focus .footer__form__counter {
+        opacity: 1;
+        -webkit-transition-duration: .3s;
+                transition-duration: .3s;
+        -webkit-transition-property: opacity;
+        transition-property: opacity; }
+    body .inbenta-bot__chat__confirmation, body .inbenta-bot__bubble__confirmation {
+      border-radius: 0;
+      font-family: "Hint", Helvetica, sans-serif; }
+      body .inbenta-bot__chat__confirmation .confirmation-box, body .inbenta-bot__bubble__confirmation .confirmation-box {
+        border-radius: 0; }
+        body .inbenta-bot__chat__confirmation .confirmation-box__icon:before, body .inbenta-bot__bubble__confirmation .confirmation-box__icon:before {
+          color: #701c74; }
+        body .inbenta-bot__chat__confirmation .confirmation-box__title, body .inbenta-bot__bubble__confirmation .confirmation-box__title {
+          color: #333;
+          font-family: "Hint", Helvetica, sans-serif;
+          text-align: center;
+          font-size: 14px; }
+        body .inbenta-bot__chat__confirmation .confirmation-box__subtitle, body .inbenta-bot__bubble__confirmation .confirmation-box__subtitle {
+          font-family: "Hint", Helvetica, sans-serif;
+          font-size: 13px; }
+        body .inbenta-bot__chat__confirmation .confirmation-box__buttons, body .inbenta-bot__bubble__confirmation .confirmation-box__buttons {
+          margin-top: 20px; }
+          body .inbenta-bot__chat__confirmation .confirmation-box__buttons .inbenta-bot-button, body .inbenta-bot__bubble__confirmation .confirmation-box__buttons .inbenta-bot-button {
+            font-family: "Hint", Helvetica, sans-serif;
+            min-height: auto; }
+  body .inbenta-bot__bubble__header {
+    background-color: #701c74; }
+  body .inbenta-bot__bubble .header__title {
+    color: white;
+    text-transform: none;
+    font-weight: 500;
+    line-height: 21px; }
+  body .inbenta-bot__bubble .header__actions__icon:before {
+    color: white; }
+  body .inbenta-bot__bubble .header__actions__icon:hover:before {
+    color: white; }
+  body .inbenta-bot-rating__content {
+    background-color: #F4F4F4;
+    padding-top: 12px; }
+    body .inbenta-bot-rating__content__phrase {
+      color: #333;
+      font-weight: 500; }
+    body .inbenta-bot-rating__content__buttons .inbenta-bot-button {
+      width: 60px; }
+      body .inbenta-bot-rating__content__buttons .inbenta-bot-button + .inbenta-bot-button {
+        margin-left: 8px; }
+      body .inbenta-bot-rating__content__buttons .inbenta-bot-button__text {
+        display: block;
+        width: 100%; }
+    body .inbenta-bot-rating__content .inbenta-bot-icon {
+      display: none; }
+    body .inbenta-bot-rating__content__comment .comment__phrase {
+      color: #333;
+      font-weight: normal; }
+    body .inbenta-bot-rating__content__thanks {
+      color: #333;
+      font-weight: 600; }
+  body .inbenta-bot--msie-11 .inbenta-bot__chat .messages__message .extended_message_container .messages__message__content .content__related__show, body .inbenta-bot--msie-11 .inbenta-bot__bubble .messages__message .extended_message_container .messages__message__content .content__related__show {
+    font-size: 14px; }
+
+@media (max-width: 480px) {
+  body .inbenta-bot-rating__content__buttons .inbenta-bot-button {
+    width: 60px; }
+    body .inbenta-bot-rating__content__buttons .inbenta-bot-button + .inbenta-bot-button {
+      margin-left: 8px; }
+    body .inbenta-bot-rating__content__buttons .inbenta-bot-button__text {
+      display: block; }
+  body .inbenta-bot-rating__content .inbenta-bot-icon {
+    display: none; }
+  body .inbenta-bot-rating__content__comment .comment__wrapper {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -ms-align-items: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+    body .inbenta-bot-rating__content__comment .comment__wrapper__textarea {
+      width: 100%;
+      margin-right: 0;
+      margin-bottom: 10px; } }
+
+.inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button span:last-child {
+  color: #000;
+  font-weight: bold;
+}
+
+.inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button.clicked span:last-child,
+.inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button:hover span:last-child{
+  color: #fe0196;
+  font-weight: bold;
+}
+
+body .inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button.clicked,
+body .inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button.clicked {
+  color: #fe0196;
+  font-weight: bold;
+}
+
+.inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-icon--faq-icon:before,
+.inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-icon--faq-icon:before {
+  color: #000 !important;
+}
+
+.inbenta-bot__chat .content__buttons--multiple-choise .inbenta-bot-button .inbenta-bot-icon--faq-icon,
+.inbenta-bot__bubble .content__buttons--multiple-choise .inbenta-bot-button .inbenta-bot-icon--faq-icon {
+  display: inline;
+  margin-top: -4px;
+  margin-right: -1px;
+  font-size: 11px;
+}
+
